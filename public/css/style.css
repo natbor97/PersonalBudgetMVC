@@ -1,0 +1,108 @@
+html{
+    height: 100%;
+}
+
+body {
+    background-image: url(https://img.freepik.com/premium-wektory/monety-bitcoin-latajace-na-bialym-tle-pieniadze-zlote-monety-samodzielnie_36059-268.jpg?w=2000);
+}
+
+h1 {
+    color: rgb(34, 17, 188);
+    text-shadow: 5px 5px 2px rgb(7, 3, 26);
+    font-family: fantasy;
+    font-size: 100px;
+    letter-spacing: 0.1em;
+}
+
+h2 {
+    font-family: fantasy;
+    font-size: 50px;
+}
+
+button {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    letter-spacing: 2px;
+    border: 2px solid;
+}
+
+a {
+    color: rgb(17, 10, 162);
+}
+
+.menubutton {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    letter-spacing: 2px;
+    border: 2px solid black;
+    font-size: 40px;
+    background-color: white;
+    text-decoration-line: none;
+    color: black;
+}
+
+.menubutton:hover {
+    font-size: 41px;
+    border-color: goldenrod;
+}
+
+#window {
+    background-image: url("https://st.depositphotos.com/3008028/4643/i/950/depositphotos_46431811-stock-photo-abstract-white-background.jpg");
+    border: 2px solid black;
+    width: 60%;
+}
+
+h3 {
+	margin-top: 1vh;
+    color: rgb(34, 17, 188);
+    text-shadow: 0.5vw 0.5vw 0.5vw rgb(7, 3, 26);
+    font-family: fantasy;
+    font-size: 5vw;
+    letter-spacing: 2px;
+}
+
+#comment {
+    border-color: black;
+    border-width: 0.7mm;
+	width: 70%;
+}
+
+#cat {
+    max-width: 70%;
+}
+
+#choice {
+    font-size: 20px;
+    width:60%;
+}
+
+#myCollapse {
+    width: 60%;
+    text-align: center;
+    border-radius: 2mm;
+}
+
+.choiceDate {
+    width:100%;
+    border-radius: 2mm;
+    border-width: 1px;
+    border-color: rgb(7, 7, 115);
+    color: rgb(14, 13, 21);
+    font-family: fantasy;
+    font-size: 20px;
+    letter-spacing: 0.1em;;
+}
+
+.choiceDate:hover {
+    background-color: rgb(236, 211, 88);
+    font-size: 22px;
+    color: rgb(36, 15, 194);
+}
+
+.nav-link {
+    color: rgb(0, 8, 255);
+    font-size: 20px;
+}
+
+#home, img {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+

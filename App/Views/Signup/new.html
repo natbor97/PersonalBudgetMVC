@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Budżet Osobisty-Rejestracja{% endblock %}
+
+{% block footer %}
+<script src="/js/hideShowPassword.min.js"></script>
+
+<script>
+    function myFunction() {
+        var x = document.getElementById("inputPassword");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid text-center">
+    <div class="form-group">
+        <h1>Twój<br>budżet<br>osobisty</h1>
+    </div>
+    <div class="form-group">
+        <div class="row align-items-stretch">
+
+            <h2>REJESTRACJA</h2>
+
+            <form method="post" action="/signup/create" id="formSignup">
+                <div>
+                    <p><label for="inputName"><b>Imię</b></label>
+                        <input type="text" name="username" id="inputName" placeholder="Jan" value="{{user.username}}"
+                            required />
+                </div>
+
+                <div>
+                    <p><label for="inputEmail"><b>Email</b></label>
+                        <input type="email" name="email" id="inputEmail" placeholder="user@gmail.com"
+                            value="{{user.email}}" required />
+                </div>
+
+                <div>
+                    <p><label for="inputPassword"><b>Hasło</b></label>
+                        <input type="password" name="password" id="inputPassword" placeholder="qwerty123" required />
+                        <input type="checkbox" onclick="myFunction()" />
+                </div>
+
+                <div>
+                    <input type="submit" value="Zarejestruj się" />
+                </div>
+            </form>
+            <b>
+                <p><a href="/login/new">Masz już konto?- ZALOGUJ SIĘ!
+                    </a>
+            </b>
+        </div>
+
+        {% if user.errors is not empty %}
+        <div class="container-fluid text-center bg-danger text-white" style="width:30%">
+            {% for error in user.errors %}
+            {{ error }}<br>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

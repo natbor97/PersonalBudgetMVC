@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Budżet Osobisty-Logowanie{% endblock %}
+
+{% block footer %}
+
+<script>
+    function myFunction() {
+        var x = document.getElementById("inputPassword");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid text-center">
+    <div class="form-group">
+        <h1>Twój<br>budżet<br>osobisty</h1>
+    </div>
+    <div class="form-group">
+        <div class="row align-items-center">
+            <form action="/login/create" method="post">
+                <h2>LOGOWANIE</h2>
+                <div>
+                    <p><label for="inputEmail"><b>Email</b></label>
+                        <input type="email" name="email" id="inputEmail" placeholder="user@gmail.com" autofocus value="{{ email }}" required>
+                </div>
+                <div>
+                    <p><label for="inputPassword"><b>Hasło</b></label>
+                        <input type="password" name="password" id="inputPassword" placeholder="qwerty123" required>
+                        <input type="checkbox" onclick="myFunction()" />
+                </div>
+                <input type="submit" value="Zaloguj się" />
+            </form>
+        </div>
+        <b>
+            <p><a href="/signup/new">REJESTRACJA - załóż darmowe konto</a>
+        </b>
+    </div>
+</div>
+
+{% endblock %}

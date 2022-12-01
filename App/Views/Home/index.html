@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<div class="container-fluid text-center">
+    <div>
+        <h1>Budżet osobisty</h1>
+    </div>
+    <div class="container bg-primary" id="home">
+        <div class="row">
+            <p>
+            <div class="col">
+                <img src="./img/ikona.png" style="width:90%">
+                
+            </div>
+            
+            <div class="col">
+                <br><img src="./img/cytat.png" style="width:90%">
+                <p><br>
+                <form action="/login/new" method="post">
+                    <button class="menubutton">Zaloguj się</button>
+                </form> <br>
+                <form action="/signup/new" method="post">
+                    <p><button class="menubutton">Zarejestruj się</button>
+                </form>
+            </div>
+        </div>
+        <br>
+    </div>
+
+</div>
+{% endblock %}
