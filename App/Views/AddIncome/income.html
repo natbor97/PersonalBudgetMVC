@@ -1,0 +1,73 @@
+{% extends 'navbar.html' %}
+
+{% block title %}Budżet Osobisty- Dodaj Przychód{% endblock %}
+
+{% block footer %}
+
+<script>document.getElementById('date').valueAsDate = new Date();</script>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid">
+    <div class="text-center">
+        <form method="post" action="/addIncome/create">
+            <div class="row justify-content-around">
+                <div class="block" id="window">
+                    <div class="form-group">
+                        <h3> DODAJ PRZYCHÓD</h3>
+                    </div>
+                    <div class="form-group">
+                        <b>KWOTA</b>
+                        <input type="number" min="0.01" max="100000.00" step="0.01" id="income" name="incomeAmount"
+                            placeholder="0.00" required>
+                    </div>
+                    <p>
+                    <div class="form-group">
+                        <b>DATA</b>
+                        <input type="date" id="date" name="incomeDate">
+                    </div>
+                    <p>
+
+                    <div class="form-group">
+                        <b>KATEGORIA</b>
+                        <select name="incomeCategory" required>
+                            {% for value in userIncomeCategories %}
+                            <option value="{{value.name}}"> {{value.name}} </option>
+                            {% endfor %}
+                        </select>
+                        <p>
+                    </div>
+
+
+                    <div class="form-group">
+                        <b>KOMENTARZ (OPCJONALNIE)</b><br>
+                        <textarea id="comment" name="incomeComment" style="resize:both" rows="4"></textarea>
+                    </div>
+                    <br>
+                    <div>
+                        <button class="btn btn-primary" id="addIncome">DODAJ PRZYCHÓD</button>
+                        <p>
+        </form>
+
+        <form method="post" action="/home/index">
+            <button class="btn btn-danger">ANULUJ</button>
+        </form>
+    </div>
+    <p>
+</div>
+</div>
+</div>
+</div>
+
+<br>
+{% if income.errors is not empty %}
+<div class="container-fluid text-center bg-danger text-white" style="width:30%">
+    {% for error in income.errors %}
+    {{ error }}<br>
+    {% endfor %}
+    {% endif %}
+</div>
+
+{% endblock %}

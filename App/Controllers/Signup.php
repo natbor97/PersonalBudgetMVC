@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use \Core\View;
 use \App\Models\User;
+use \App\Auth;
 
 /**
  * Signup controller
@@ -16,7 +17,11 @@ class Signup extends \Core\Controller
 
     public function newAction()
     {
+        if (Auth::getUser()) {
+            $this->redirect('/Home/index');
+        } else {
         View::renderTemplate('Signup/new.html');
+        }
     }
 
     //Sign up new user
