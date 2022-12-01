@@ -18,7 +18,11 @@ class Login extends \Core\Controller
 
     public function newAction()
     {
-       View::renderTemplate('Login/new.html');
+        if (Auth::getUser()) {
+            $this->redirect('/Home/index');
+        } else {
+            View::renderTemplate('Login/new.html');
+        }
     }
 
     public function createAction()
@@ -31,7 +35,6 @@ class Login extends \Core\Controller
             Auth::login($user, $remember_me);
             Flash::addMessage('Zalogowano pomyślnie');
             $this->redirect(Auth::getReturnToPage());
-
         } else {
             Flash::addMessage('Nieprawidłowy login lub hasło, spróbuj ponownie.', Flash::WARNING);
             View::renderTemplate('Login/new.html', [
@@ -54,5 +57,4 @@ class Login extends \Core\Controller
 
         $this->redirect('/login/new');
     }
-
 }
