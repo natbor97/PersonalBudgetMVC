@@ -29,18 +29,26 @@
                 <h2>LOGOWANIE</h2>
                 <div>
                     <p><label for="inputEmail"><b>Email</b></label>
-                        <input type="email" name="email" id="inputEmail" placeholder="user@gmail.com" autofocus value="{{ email }}" required>
+                        <input type="email" name="email" id="inputEmail" placeholder="user@gmail.com" autofocus
+                            value="{{ email }}" required>
                 </div>
                 <div>
                     <p><label for="inputPassword"><b>Hasło</b></label>
                         <input type="password" name="password" id="inputPassword" placeholder="qwerty123" required>
                         <input type="checkbox" onclick="myFunction()" />
                 </div>
-                <input type="submit" value="Zaloguj się" />
+                
+                    <input class="btn btn-primary" style="width: 200px" type="submit" value="Zaloguj się" />
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="remember_me" {% if remember_me %} checked="checked" {% endif %} />
+                        Zapamiętaj mnie
+                    </label>
+                </div>
             </form>
         </div>
         <b>
-            <p><a href="/signup/new">REJESTRACJA - załóż darmowe konto</a>
+            <br><a href="/signup/new">REJESTRACJA - załóż darmowe konto</a>
         </b>
     </div>
 </div>

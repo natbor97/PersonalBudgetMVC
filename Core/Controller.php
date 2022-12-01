@@ -2,9 +2,11 @@
 
 namespace Core;
 
+use \App\Auth;
+use \App\Flash;
+
 /**
  * Base controller
- *
  * PHP version 8.1.10
  */
 abstract class Controller
@@ -73,12 +75,33 @@ abstract class Controller
 
     /**
      * Redirect to a different page
+     *
      * @param string $url  The relative URL
+     *
      * @return void
      */
     public function redirect($url)
     {
         header('Location: http://' . $_SERVER['HTTP_HOST'] . $url, true, 303);
         exit;
+    }
+
+    /**
+     * Require the user to be logged in before giving access to the requested page.
+     * Remember the requested page for later, then redirect to the login page.
+     *
+     * @return void
+     */
+    public function requireLogin()
+    {
+        if (! Auth::getUser()) {
+
+            //Flash::addMessage('Please login to access that page');
+            Flash::addMessage('Aby wyświetlić stronę musisz się zalogować!', Flash::INFO);
+
+            Auth::rememberRequestedPage();
+
+            $this->redirect('/login');
+        }
     }
 }

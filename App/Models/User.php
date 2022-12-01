@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use \App\Token;
 
 use PDO;
 
@@ -83,15 +84,61 @@ class User extends \Core\Model
         return $stmt->fetch();
     }
 
-    protected function copyDefaultCategories($userId) {
-		$db = static::getDB();
-		$copyPayments=$db->prepare("INSERT INTO payment_methods_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM payment_methods_default");
-		$copyPayments->bindValue(':newUserId',$userId,PDO::PARAM_INT);
-		$copyIncomes=$db->prepare("INSERT INTO incomes_category_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM incomes_category_default");
-		$copyIncomes->bindValue(':newUserId',$userId,PDO::PARAM_INT);
-		$copyExpenses=$db->prepare("INSERT INTO expenses_category_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM expenses_category_default");
-		$copyExpenses->bindValue(':newUserId',$userId,PDO::PARAM_INT);
-		return ($copyPayments->execute() && $copyIncomes->execute() && $copyExpenses->execute());
-	}
+    protected function copyDefaultCategories($userId)
+    {
+        $db = static::getDB();
+        $copyPayments = $db->prepare("INSERT INTO payment_methods_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM payment_methods_default");
+        $copyPayments->bindValue(':newUserId', $userId, PDO::PARAM_INT);
+        $copyIncomes = $db->prepare("INSERT INTO incomes_category_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM incomes_category_default");
+        $copyIncomes->bindValue(':newUserId', $userId, PDO::PARAM_INT);
+        $copyExpenses = $db->prepare("INSERT INTO expenses_category_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM expenses_category_default");
+        $copyExpenses->bindValue(':newUserId', $userId, PDO::PARAM_INT);
+        return ($copyPayments->execute() && $copyIncomes->execute() && $copyExpenses->execute());
+    }
 
+    public static function findByID($id)
+    {
+        $sql = 'SELECT * FROM users WHERE id = :id';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public static function authenticate($email, $password)
+    {
+        $user = static::findByEmail($email);
+        if ($user) {
+            if (password_verify($password, $user->password)) {
+                return $user;
+            }
+        }
+        return false;
+    }
+
+    public function rememberLogin()
+    {
+        $token = new Token();
+        $hashed_token = $token->getHash();
+        $this->remember_token = $token->getValue();
+
+        //$expiry_timestamp = time() + 60 * 60 * 24 * 30;  // 30 days from now
+        $this->expiry_timestamp = time() + 60 * 60 * 24 * 30;  // 30 days from now
+
+        $sql = 'INSERT INTO remembered_logins (token_hash, user_id, expires_at)
+                VALUES (:token_hash, :user_id, :expires_at)';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindValue(':token_hash', $hashed_token, PDO::PARAM_STR);
+        $stmt->bindValue(':user_id', $this->id, PDO::PARAM_INT);
+        //$stmt->bindValue(':expires_at', date('Y-m-d H:i:s', $expiry_timestamp), PDO::PARAM_STR);
+        $stmt->bindValue(':expires_at', date('Y-m-d H:i:s', $this->expiry_timestamp), PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
 }
