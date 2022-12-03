@@ -1,0 +1,172 @@
+{% extends 'navbar.html' %}
+
+{% block title %}Budżet Osobisty-Bilans{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+{% endblock %}
+
+
+{% block body %}
+<div class="container-fluid text-center">
+  <button id="choice" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#myCollapse">WYBIERZ OKRES
+  </button>
+  <div class="collapse navbar-collapse container-fluid" id="myCollapse">
+    <ul class="navbar-nav mx-auto">
+      <li>
+        <form action="/showBalance/currentMonth" method="post">
+          <button class="choiceDate">BIEŻĄCY MIESIĄC</button>
+        </form>
+      </li>
+      <li>
+        <form action="/showBalance/lastMonth" method="post">
+          <button class="choiceDate">POPRZEDNI MIESIĄC</button>
+        </form>
+      </li>
+      <li>
+        <form action="/showBalance/currentYear" method="post">
+          <button class="choiceDate">BIEŻĄCY ROK</button>
+        </form>
+      </li>
+      <li>
+        <button type="button" class="choiceDate" data-bs-toggle="modal"
+          data-bs-target="#myModal">NIESTANDARDOWE</button>
+      </li>
+      <li role="separator" class="divider"></li>
+    </ul>
+  </div>
+</div>
+<br>
+
+<div class="container-fluid text-center" id="window">
+  <div><br>
+    <h4 class="text-center">
+      Bilans przychodów i wydatków z okresu <br>
+      {{start_date}} - {{end_date}}
+
+    </h4>
+    <hr />
+    <table class="table table-striped bg-white" id="table-incomes">
+      <h3>PRZYCHODY</h3>
+      {% if incomeSum>0 %}
+      <thead>
+        <tr>
+          <th>Kategoria</th>
+          <th>Data</th>
+          <th>Komentarz</th>
+          <th>Kwota</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for value in incomeBalanceTable %}
+        <tr id="{{value.id}}">
+          <td class="row-data-income" id="income_category">{{value.name}}</td>
+          <td class="row-data-income" id="date_of_income">{{value.date_of_income}}</td>
+          <td class="row-data-income" id="income_comment">{{value.income_comment}}</td>
+          <td class="row-data-income" id="income_value">{{value.amount}}</td>
+        </tr>
+        {% endfor %}
+
+        <tr>
+          <td colspan="3" class="row-data-income"><b>SUMA PRZYCHODÓW</b></td>
+          <td class="row-data-income" id="incomeSum"><b>{{incomeSum}}</b></td>
+        </tr>
+
+      </tbody>
+    </table>
+    {% else %}
+    <h4> Brak przychodów w danym okresie</h4>
+    {% endif %}
+
+
+    <div id="piechartincomes"></div>
+
+    <table class="table table-striped bg-white" id="table-expenses">
+      <h3>WYDATKI</h3>
+      {% if expenseSum>0 %}
+      <thead>
+        <tr>
+          <th>Kategoria</th>
+          <th>Sposób płatności</th>
+          <th>Data</th>
+          <th>Komentarz</th>
+          <th>Kwota</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for value in expenseBalanceTable %}
+        <tr id="{{value.id}}">
+          <td class="row-data-expense" id="expense_category">{{value.expense_name}}</td>
+          <td class="row-data-expense" id="payment_category">{{value.payment_name}}</td>
+          <td class="row-data-expense" id="date_of_expense">{{value.date_of_expense}}</td>
+          <td class="row-data-expense" id="expense_comment">{{value.expense_comment}}</td>
+          <td class="row-data-expense" id="expense_value">{{value.amount}}</td>
+        </tr>
+        {% endfor %}
+
+        <tr>
+          <td colspan="4" class="row-data-expense"><b>SUMA WYDATKÓW</b></td>
+          <td class="row-data-expense" id="expenseSum"><b>{{expenseSum}}</b></td>
+        </tr>
+      </tbody>
+    </table>
+
+    {% else %}
+    <h4> Brak wydatków w danym okresie</h4>
+    {% endif %}
+    <hr />
+
+    <div>
+      <br>
+      <h4>Bilans przychodów i wydatków:</h4>
+      {% if balance>0 %}
+      <h4 style='color:green;'>{{balance}} zł </h4>
+      <h4> Gratulacje, świetnie zarządzasz finansami :) </h4>
+
+      {% elseif balance<0 %} 
+      <h4 style="color:red;"> {{balance}} zł </h4>
+      <h4> Uważaj, popadasz w długi! </h4>
+
+      {% else %}
+      <h4> {{balance}} zł </h4>
+      {% endif %}
+    </div>
+    
+  </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title">Wybierz okres</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/showBalance/selectedDate" method="post">
+          Data początkowa:
+          <input type="date" name="start_date" class="form-control">
+
+          Data końcowa:
+          <input type="date" name="end_date" class="form-control">
+          <p>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">Zatwierdź</button>
+        </form>
+        <p>
+        <form method="post" action="/showBalance/currentMonth">
+          <button class="btn btn-danger">Anuluj</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}
