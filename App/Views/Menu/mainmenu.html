@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Budżet Osobisty{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid text-center">
+    <div class="form-group">
+        <h1>MENU<br>GŁÓWNE</h1>
+    </div>
+    <div class="form-group">
+        <a href="/AddIncome/income" class="menubutton">DODAJ PRZYCHÓD</a>
+        </form>
+    </div>
+
+    <div class="form-group">
+        <a href="/AddExpense/expense" class="menubutton"> DODAJ WYDATEK</a>
+    </div>
+
+    <div class="form-group">
+        <a href="/showBalance/currentMonth" class="menubutton">PRZEGLĄDAJ BILANS</a>
+    </div>
+
+    <div class="form-group">
+        <a href="/" class="menubutton">USTAWIENIA</a>
+    </div>
+
+    <div class="form-group">
+        <a href="/logout" class="menubutton">WYLOGUJ SIĘ</a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

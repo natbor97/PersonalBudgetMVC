@@ -15,8 +15,12 @@ class Home extends \Core\Controller
 
     public function indexAction()
     {
-        View::renderTemplate('Home/index.html', [
-            //'user' => Auth::getUser()
-        ]);
+        if (Auth::getUser()) {
+            $this->redirect('/Menu/mainmenu');
+        }
+        else
+        {
+            View::renderTemplate('Home/index.html');
+        }
     }
 }
