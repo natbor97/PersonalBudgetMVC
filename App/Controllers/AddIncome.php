@@ -3,6 +3,9 @@
 namespace App\Controllers;
 
 use \Core\View;
+use \App\Auth;
+use \App\Flash;
+use \App\Models\Income;
 
 /**
  * AddIncome controller (example)
@@ -12,9 +15,38 @@ use \Core\View;
 class AddIncome extends Authenticated
 {
 
-    public function incomeAction()
+    protected function before()
     {
-        View::renderTemplate('AddIncome/income.html');
+        parent::before();
+        $this->user = Auth::getUser();
     }
 
+    public function incomeAction($arg1 = 0, $arg2 = 0)
+    {
+        $success = false;
+        $userIncomeCategories = Income::getUserIncomeCategories($this->user->id);
+
+        View::renderTemplate(
+            'AddIncome/income.html',
+            [
+                'user' => $this->user,
+                'incomes' => $arg1,
+                'errors' => $arg2,
+                'userIncomeCategories' => $userIncomeCategories
+            ]
+        );
+    }
+
+    public function createAction()
+    {
+        $income = new Income($_POST);
+
+        if ($income->saveUserIncome($this->user->id)) 
+        {
+            Flash::addMessage('Przychód dodano pomyślnie.');
+        } else {
+            Flash::addMessage('Operacja nie powiodła się.', Flash::WARNING);
+        }
+        $this->redirect('/addIncome/income');
+    }
 }
