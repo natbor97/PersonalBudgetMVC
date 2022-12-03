@@ -18,7 +18,7 @@ class Signup extends \Core\Controller
     public function newAction()
     {
         if (Auth::getUser()) {
-            $this->redirect('/Home/index');
+            $this->redirect('/Menu/mainmenu');
         } else {
         View::renderTemplate('Signup/new.html');
         }

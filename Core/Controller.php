@@ -20,9 +20,7 @@ abstract class Controller
 
     /**
      * Class constructor
-     *
      * @param array $route_params  Parameters from the route
-     *
      * @return void
      */
     public function __construct($route_params)
@@ -82,7 +80,7 @@ abstract class Controller
      */
     public function redirect($url)
     {
-        header('Location: http://' . $_SERVER['HTTP_HOST'] . $url, true, 303);
+        header('Location: https://' . $_SERVER['HTTP_HOST'] . $url, true, 303);
         exit;
     }
 
@@ -101,7 +99,7 @@ abstract class Controller
 
             Auth::rememberRequestedPage();
 
-            $this->redirect('/login');
+            $this->redirect('/login/new');
         }
     }
 }

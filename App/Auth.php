@@ -78,11 +78,6 @@ class Auth
         $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
     }
 
-    public static function getReturnToPage()
-    {
-        return $_SESSION['return_to'] ?? '/';
-    }
-
     protected static function loginFromRememberCookie()
     {
         $cookie = $_COOKIE['remember_me'] ?? false;
@@ -115,7 +110,7 @@ class Auth
                 $remembered_login->delete();
             }
 
-            setcookie('remember_me', '', time() - 3600);  // set to expire in the past
+            setcookie('remember_me', '', time() - 3600,'/');  // set to expire in the past
         }
     }
 
