@@ -29,7 +29,7 @@ class User extends \Core\Model
             $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
 
             $sql = 'INSERT INTO users (username, password, email)
-            VALUES (:username, :password_hash, :email)';
+                    VALUES (:username, :password_hash, :email)';
 
             $db = static::getDB();
             $stmt = $db->prepare($sql);
@@ -76,8 +76,10 @@ class User extends \Core\Model
     public static function findByEmail($email)
     {
         $sql = 'SELECT * FROM users WHERE email = :email';
+
         $db = static::getDB();
         $stmt = $db->prepare($sql);
+
         $stmt->bindValue(':email', $email, PDO::PARAM_STR);
         $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
         $stmt->execute();
@@ -87,12 +89,18 @@ class User extends \Core\Model
     protected function copyDefaultCategories($userId)
     {
         $db = static::getDB();
-        $copyPayments = $db->prepare("INSERT INTO payment_methods_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM payment_methods_default");
+        $sql = 'INSERT INTO payment_methods_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM payment_methods_default';
+        $copyPayments = $db->prepare($sql);
         $copyPayments->bindValue(':newUserId', $userId, PDO::PARAM_INT);
-        $copyIncomes = $db->prepare("INSERT INTO incomes_category_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM incomes_category_default");
+
+        $sql = 'INSERT INTO incomes_category_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM incomes_category_default';
+        $copyIncomes = $db->prepare($sql);
         $copyIncomes->bindValue(':newUserId', $userId, PDO::PARAM_INT);
-        $copyExpenses = $db->prepare("INSERT INTO expenses_category_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM expenses_category_default");
+
+        $sql ='INSERT INTO expenses_category_assigned_to_users (id, user_id, name) SELECT NULL, :newUserId, name FROM expenses_category_default';
+        $copyExpenses = $db->prepare($sql);
         $copyExpenses->bindValue(':newUserId', $userId, PDO::PARAM_INT);
+
         return ($copyPayments->execute() && $copyIncomes->execute() && $copyExpenses->execute());
     }
 

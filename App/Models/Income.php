@@ -17,8 +17,8 @@ class Income extends \Core\Model
     public static function getUserIncomeCategories($id)
     {
         $sql = 'SELECT id, name FROM incomes_category_assigned_to_users WHERE user_id=:id';
-        $db = static::getDB();
 
+        $db = static::getDB();
         $query_income_categories = $db->prepare($sql);
 
         $query_income_categories->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
@@ -34,7 +34,7 @@ class Income extends \Core\Model
 
         if (empty($this->errors)) {
             $sql = 'INSERT INTO incomes (user_id, income_category_assigned_to_user_id, amount, date_of_income, income_comment)
-        VALUES (:user_id, :income_category_id, :amount, :date_of_income, :income_comment)';
+                    VALUES (:user_id, :income_category_id, :amount, :date_of_income, :income_comment)';
 
             $db = static::getDB();
             $stmt = $db->prepare($sql);
@@ -55,8 +55,8 @@ class Income extends \Core\Model
         $sql = 'SELECT id, user_id, name FROM incomes_category_assigned_to_users WHERE user_id = :user_id AND name = :name';
 
         $db = static::getDB();
-
         $stmt = $db->prepare($sql);
+        
         $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->bindValue(':name', $this->incomeCategory, PDO::PARAM_STR);
         $stmt->execute();

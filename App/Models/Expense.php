@@ -17,9 +17,10 @@ class Expense extends \Core\Model
 
   public static function getUserExpenseCategories($id)
   {
-    $db = static::getDB();
+    $sql = 'SELECT id, name FROM expenses_category_assigned_to_users WHERE user_id=:id';
 
-    $query_expense_categories = $db->prepare("SELECT id, name FROM expenses_category_assigned_to_users WHERE user_id=:id");
+    $db = static::getDB();
+    $query_expense_categories = $db->prepare($sql);
 
     $query_expense_categories->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
     $query_expense_categories->execute();
@@ -30,9 +31,10 @@ class Expense extends \Core\Model
 
   public static function getUserPaymentMethods($id)
   {
-    $db = static::getDB();
+    $sql = 'SELECT id, name FROM payment_methods_assigned_to_users WHERE user_id=:id';
 
-    $query_payment_methods = $db->prepare("SELECT id, name FROM payment_methods_assigned_to_users WHERE user_id=:id");
+    $db = static::getDB();
+    $query_payment_methods = $db->prepare($sql);
 
     $query_payment_methods->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
     $query_payment_methods->execute();
@@ -47,7 +49,7 @@ class Expense extends \Core\Model
 
     if (empty($this->errors)) {
       $sql = 'INSERT INTO expenses (user_id, expense_category_assigned_to_user_id, payment_method_assigned_to_user_id, amount, date_of_expense, expense_comment)
-        VALUES (:user_id, :expense_category_id, :payment_method_id, :amount, :date_of_expense, :expense_comment)';
+              VALUES (:user_id, :expense_category_id, :payment_method_id, :amount, :date_of_expense, :expense_comment)';
 
       $db = static::getDB();
       $stmt = $db->prepare($sql);
@@ -69,8 +71,8 @@ class Expense extends \Core\Model
     $sql = 'SELECT id, user_id, name FROM expenses_category_assigned_to_users WHERE user_id = :user_id AND name = :name';
 
     $db = static::getDB();
-
     $stmt = $db->prepare($sql);
+
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->bindValue(':name', $this->expenseCategory, PDO::PARAM_STR);
     $stmt->execute();
@@ -85,8 +87,8 @@ class Expense extends \Core\Model
     $sql = 'SELECT id, user_id, name FROM payment_methods_assigned_to_users WHERE user_id = :user_id AND name = :name';
 
     $db = static::getDB();
-
     $stmt = $db->prepare($sql);
+    
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->bindValue(':name', $this->paymentMethods, PDO::PARAM_STR);
     $stmt->execute();
