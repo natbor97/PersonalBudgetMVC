@@ -1,5 +1,3 @@
-Budżet Osobisty-Aktywacja konta
-
-Dziękujemy za rejestrację. Aby aktywować swoje konto proszę kliknąć w poniższy link:
+Dziękujemy za rejestrację. Aby aktywować swoje konto proszę kliknąć w link:
 
 {{url}}
