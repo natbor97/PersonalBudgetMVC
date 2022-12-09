@@ -1,0 +1,5 @@
+Personal Budget-Aktywacja konta
+
+Dziękujemy za rejestrację. Aby aktywować swoje konto proszę kliknąć w poniższy link:
+
+{{url}}

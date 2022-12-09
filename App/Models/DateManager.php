@@ -80,6 +80,7 @@ class DateManager extends \Core\Model
         'start_date' => isset($_POST['start_date']) ? $_POST['start_date']: $arg1,
         'end_date' => isset($_POST['end_date']) ? $_POST['end_date']: $arg2
         ];
+        
         return $date;
     }  
 }

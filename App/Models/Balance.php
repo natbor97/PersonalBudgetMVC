@@ -12,29 +12,29 @@ class balance extends \Core\Model
     {
         foreach ($data as $key => $value) {
             $this->$key = $value;
-        }
+        };
     }
 
     public static function getIncomes($date, $id)
-    {
-
-        $sql = 'SELECT inc.id, inc.amount, inc.date_of_income, inc.income_category_assigned_to_user_id, inc.income_comment, cat.name 
+    { 
+            $sql = 'SELECT inc.id, inc.amount, inc.date_of_income, inc.income_category_assigned_to_user_id, inc.income_comment, cat.name 
                 FROM incomes as inc, incomes_category_assigned_to_users AS cat 
                 WHERE inc.date_of_income BETWEEN :start_date AND :end_date AND inc.user_id = :user_id AND inc.income_category_assigned_to_user_id = cat.id 
                 ORDER BY inc.date_of_income ASC';
 
-        $db = static::getDB();
-        $stmt = $db->prepare($sql);
+            $db = static::getDB();
+            $stmt = $db->prepare($sql);
 
-        $stmt->bindValue(':start_date', $date['start_date'], PDO::PARAM_STR);
-        $stmt->bindValue(':end_date', $date['end_date'], PDO::PARAM_STR);
-        $stmt->bindValue(':user_id', $id, PDO::PARAM_INT);
+            $stmt->bindValue(':start_date', $date['start_date'], PDO::PARAM_STR);
+            $stmt->bindValue(':end_date', $date['end_date'], PDO::PARAM_STR);
+            $stmt->bindValue(':user_id', $id, PDO::PARAM_INT);
 
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
-        $stmt->execute();
+            $stmt->execute();
 
-        return $stmt->fetchAll();
+            return $stmt->fetchAll();
+
     }
 
     public static function getIncomesSum($date, $id)
@@ -64,7 +64,7 @@ class balance extends \Core\Model
                 FROM expenses AS exp, expenses_category_assigned_to_users AS cat, payment_methods_assigned_to_users AS pay 
                 WHERE exp.date_of_expense BETWEEN :start_date AND :end_date AND exp.user_id = :user_id AND pay.user_id = :user_id AND  exp.expense_category_assigned_to_user_id = cat.id AND exp.payment_method_assigned_to_user_id = pay.id 
                 ORDER BY exp.date_of_expense ASC';
-        
+
         $db = static::getDB();
         $stmt = $db->prepare($sql);
 

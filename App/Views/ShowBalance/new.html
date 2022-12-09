@@ -149,10 +149,10 @@
       <div class="modal-body">
         <form action="/showBalance/selectedDate" method="post">
           Data początkowa:
-          <input type="date" name="start_date" class="form-control">
+          <input type="date" name="start_date" min="1900-01-01" max="2500-01-01" class="form-control" required />
 
           Data końcowa:
-          <input type="date" name="end_date" class="form-control">
+          <input type="date" name="end_date" min="1900-01-01" max="2500-01-01" class="form-control"required />
           <p>
 
           <div class="text-center">

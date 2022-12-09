@@ -2,6 +2,8 @@
 
 namespace App\Models;
 use \App\Token;
+use \App\Mailer;
+use \Core\View;
 
 use PDO;
 
@@ -28,8 +30,12 @@ class User extends \Core\Model
 
             $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
 
-            $sql = 'INSERT INTO users (username, password, email)
-                    VALUES (:username, :password_hash, :email)';
+            $token = new Token();
+            $hashed_token = $token->getHash();
+            $this->activation_token = $token->getValue();
+
+            $sql = 'INSERT INTO users (username, password, email, activation_hash)
+                    VALUES (:username, :password_hash, :email, :activation_hash)';
 
             $db = static::getDB();
             $stmt = $db->prepare($sql);
@@ -37,6 +43,7 @@ class User extends \Core\Model
             $stmt->bindValue(':username', $this->username, PDO::PARAM_STR);
             $stmt->bindValue(':email', $this->email, PDO::PARAM_STR);
             $stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
+            $stmt->bindValue(':activation_hash', $hashed_token, PDO::PARAM_STR);
 
             if ($stmt->execute()) {
                 $user = static::findByEmail($this->email);
@@ -119,7 +126,7 @@ class User extends \Core\Model
     public static function authenticate($email, $password)
     {
         $user = static::findByEmail($email);
-        if ($user) {
+        if ($user && $user->is_active) {
             if (password_verify($password, $user->password)) {
                 return $user;
             }
@@ -147,5 +154,42 @@ class User extends \Core\Model
         $stmt->bindValue(':expires_at', date('Y-m-d H:i:s', $this->expiry_timestamp), PDO::PARAM_STR);
 
         return $stmt->execute();
+    }
+
+    public function sendActivationEmail()
+    {
+        $url = 'https://' . $_SERVER['HTTP_HOST'] . '/signup/activate/' . $this->activation_token;
+
+        $text = View::getTemplate('Signup/activation_email.txt', ['url' => $url]);
+        $html = View::getTemplate('Signup/activation_email.html', ['url' => $url]);
+
+        Mailer::send($this->email, 'Aktywacja konta', $html, $text);
+    }
+
+    public static function findByToken($hashed_token)
+    {
+        $sql = 'SELECT * FROM users WHERE activation_hash = :hashed_token';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':hashed_token', $hashed_token, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public static function activate($value)
+    {
+        $token = new Token($value);
+        $hashed_token = $token->getHash();
+        $user = static::findByToken($hashed_token);
+
+        $sql = 'UPDATE users
+                SET is_active = 1,
+                    activation_hash = null
+                WHERE activation_hash = :hashed_token';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':hashed_token', $hashed_token, PDO::PARAM_STR);
+        $stmt->execute();
     }
 }
