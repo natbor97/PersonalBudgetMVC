@@ -4,9 +4,12 @@ namespace App;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 require 'C:\xampp\htdocs\PersonalBudget\PHPMailer\src\PHPMailer.php';
 require 'C:\xampp\htdocs\PersonalBudget\PHPMailer\src\SMTP.php';
+require 'C:\xampp\htdocs\PersonalBudget\PHPMailer\src\Exception.php';
+
 
 class Mailer
 {
@@ -29,8 +32,8 @@ class Mailer
         $mail->setFrom('natalia.borkowska.programista@gmail.com', 'Budżet Osobisty');
         $mail->addAddress($to);
         $mail->isHTML(true);
-        $mail->Subject = "Aktywacja konta"; 
-        $mail->Body = "Witaj, Jezeli to czytasz, to znaczy, ze udalo sie poprawnie wyslac e-maila za pomoca SMTP!";
+        $mail->Subject = $subject; 
+        $mail->Body = $text;
 
         $mail->send();
     }

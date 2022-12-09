@@ -163,7 +163,7 @@ class User extends \Core\Model
         $text = View::getTemplate('Signup/activation_email.txt', ['url' => $url]);
         $html = View::getTemplate('Signup/activation_email.html', ['url' => $url]);
 
-        Mailer::send($this->email, 'Aktywacja konta', $html, $text);
+        Mailer::send($this->email, 'Aktywacja konta', $text, $html);
     }
 
     public static function findByToken($hashed_token)
