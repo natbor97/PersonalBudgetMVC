@@ -2,13 +2,15 @@
 
 namespace App;
 
+use App\Config;
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require 'C:\xampp\htdocs\PersonalBudget\PHPMailer\src\PHPMailer.php';
-require 'C:\xampp\htdocs\PersonalBudget\PHPMailer\src\SMTP.php';
-require 'C:\xampp\htdocs\PersonalBudget\PHPMailer\src\Exception.php';
+require '/home/klient.dhosting.pl/ppp/budget.natalia-borkowska.profesjonalnyprogramista.pl/PHPMailer/src/PHPMailer.php';
+require '/home/klient.dhosting.pl/ppp/budget.natalia-borkowska.profesjonalnyprogramista.pl/PHPMailer/src/SMTP.php';
+require '/home/klient.dhosting.pl/ppp/budget.natalia-borkowska.profesjonalnyprogramista.pl/PHPMailer/src/Exception.php';
 
 
 class Mailer
@@ -18,15 +20,14 @@ class Mailer
         $mail = new PHPMailer();
 
         $mail->isSMTP();
-        //$mail->SMTPDebug = SMTP::DEBUG_SERVER;
 
         $mail->Host = 'smtp.gmail.com';
         $mail->Port = 465;
         $mail->SMTPSecure = 'ssl';
         $mail->SMTPAuth = true;
 
-        $mail->Username = 'natalciaa03@gmail.com'; // Podaj swój login gmail
-		$mail->Password = 'uxzglmtjmtllvltz'; // Podaj swoje hasło do aplikacji
+        $mail->Username = Config::username;
+		$mail->Password = Config::password; 
 
         $mail->CharSet = "UTF-8";
         $mail->setFrom('natalia.borkowska.programista@gmail.com', 'Budżet Osobisty');

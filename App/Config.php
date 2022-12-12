@@ -2,18 +2,14 @@
 
 namespace App;
 
-/**
- * Application configuration
- * PHP version 8.1.10
- */
 class Config
 {
-    const DB_HOST = 'localhost';
-    const DB_NAME = 'personal_budget';
-    const DB_USER = 'root';
-    const DB_PASSWORD = '';
+    const DB_HOST = 'budget.natalia-borkowska.profesjonalnyprogramista.pl.mysql.dhosting.pl';
+    const DB_NAME = 'su3phe_budgetna';
+    const DB_USER = 'aaw7fi_budgetna';
+    const DB_PASSWORD = 'Eek0aebohng4';
     const SHOW_ERRORS = true;
-    const SECRET_KEY = 'yOzh7THO1vZ3QJSVaiW468CVv14Ik9Oj';
+	const SECRET_KEY = 'dWfkOlG2j0rDBAggpMUUbIru58afSEpx';
+    const username = 'natalia.borkowska.programista@gmail.com';
+    const password = 'jhxlwgbkgkqicfch';
 }
-
-

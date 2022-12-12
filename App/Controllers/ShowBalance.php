@@ -132,15 +132,24 @@ class showBalance extends Authenticated
     }
 
     public function selectedDateAction($arg1='', $arg2='', $arg3='', $arg4='' )
-    {               
-        $success = false;         
+    {                        
         $date = DateManager::getUserSelectedDate($arg3,$arg4);
+        $startDate = $_POST['start_date'];
+        $endDate = $_POST['end_date'];
+
         if (empty($date))
         {
             $message = '';
             $error = "Wystąpił błąd, spróbuj ponownie";
             $this -> currentMonthAction($message, $error);
         }
+
+        else if ($startDate > $endDate)
+        {
+            Flash::addMessage('Data początkowa nie może być późniejsza niż data końcowa.');
+            $this->redirect('/ShowBalance/currentMonth');
+        }
+           
         else
         {
 
