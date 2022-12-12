@@ -8,9 +8,15 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
+<<<<<<< HEAD
 require '/home/klient.dhosting.pl/ppp/budget.natalia-borkowska.profesjonalnyprogramista.pl/PHPMailer/src/PHPMailer.php';
 require '/home/klient.dhosting.pl/ppp/budget.natalia-borkowska.profesjonalnyprogramista.pl/PHPMailer/src/SMTP.php';
 require '/home/klient.dhosting.pl/ppp/budget.natalia-borkowska.profesjonalnyprogramista.pl/PHPMailer/src/Exception.php';
+=======
+require '/PHPMailer/src/PHPMailer.php';
+require '/PHPMailer/src/SMTP.php';
+require '/PHPMailer/src/Exception.php';
+>>>>>>> c3490de5debb105678b790d9be95ccfcf764bc8f
 
 
 class Mailer
@@ -30,7 +36,7 @@ class Mailer
 		$mail->Password = Config::password; 
 
         $mail->CharSet = "UTF-8";
-        $mail->setFrom('natalia.borkowska.programista@gmail.com', 'Budżet Osobisty');
+        $mail->setFrom('...', 'Budżet Osobisty');
         $mail->addAddress($to);
         $mail->isHTML(true);
         $mail->Subject = $subject; 
