@@ -158,7 +158,7 @@ class User extends \Core\Model
 
     public function sendActivationEmail()
     {
-        $url = 'https://' . $_SERVER['HTTP_HOST'] . '/signup/activate/' . $this->activation_token;
+        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/signup/activate/' . $this->activation_token;
 
         $text = View::getTemplate('Signup/activation_email.txt', ['url' => $url]);
         $html = View::getTemplate('Signup/activation_email.html', ['url' => $url]);
@@ -192,4 +192,411 @@ class User extends \Core\Model
         $stmt->bindValue(':hashed_token', $hashed_token, PDO::PARAM_STR);
         $stmt->execute();
     }
+
+    public function addCategoryIncome()
+	{		
+		$this->validateCategoryIncomes();
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "INSERT INTO incomes_category_assigned_to_users (id, user_id, name)
+					VALUES (NULL, '$user_id', :categoryAddIncomes)";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			$stmt->bindValue(':categoryAddIncomes', $this->categoryAddIncomes, PDO::PARAM_STR);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+    public function validateCategoryIncomes()
+    {
+
+	if ($this->categoryAddIncomes == '') {
+	    $this->errors[] = 'Kategoria jest wymagana';
+	}
+
+        if (static::categoryIncomeExists($this->categoryAddIncomes, $this->id ?? null)) {
+            $this->errors[] = 'Kategoria już istnieje';
+        }
+    }
+
+    public static function categoryIncomeExists($categoryAddIncomes, $ignore_id = null)
+    {
+        $user = static::findByCategoryIncome($categoryAddIncomes);
+
+        if ($user) {
+            if ($user->id != $ignore_id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function findByCategoryIncome($categoryAddIncomes)
+    {
+        $sql = 'SELECT * FROM incomes_category_assigned_to_users WHERE name = :categoryAddIncomes';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':categoryAddIncomes', $categoryAddIncomes, PDO::PARAM_STR);
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+        $stmt->execute();
+
+        return $stmt->fetch();
+    }
+
+    public function addCategoryExpense()
+	{		
+		$this->validateCategoryExpenses();
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "INSERT INTO expenses_category_assigned_to_users (id, user_id, name)
+					VALUES (NULL, '$user_id', :categoryAddExpenses)";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			$stmt->bindValue(':categoryAddExpenses', $this->categoryAddExpenses, PDO::PARAM_STR);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+    public function validateCategoryExpenses()
+    {
+
+	if ($this->categoryAddExpenses == '') {
+	     $this->errors[] = 'Kategoria jest wymagana';
+	}
+
+        if (static::categoryExpenseExists($this->categoryAddExpenses, $this->id ?? null)) {
+            $this->errors[] = 'Kategoria już istnieje';
+        }
+    }
+
+    public static function categoryExpenseExists($categoryAddExpenses, $ignore_id = null)
+    {
+        $user = static::findByCategoryExpense($categoryAddExpenses);
+
+        if ($user) {
+            if ($user->id != $ignore_id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    public static function findByCategoryExpense($categoryAddExpenses)
+    {
+        $sql = 'SELECT * FROM expenses_category_assigned_to_users WHERE name = :categoryAddExpenses';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':categoryAddExpenses', $categoryAddExpenses, PDO::PARAM_STR);
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+        $stmt->execute();
+
+        return $stmt->fetch();
+    }
+
+    public function addPay()
+	{		
+		$this->validatePay();
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "INSERT INTO payment_methods_assigned_to_users (id, user_id, name)
+					VALUES (NULL, '$user_id', :addPay)";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			$stmt->bindValue(':addPay', $this->addPay, PDO::PARAM_STR);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+    public function validatePay()
+    {
+
+	if ($this->addPay == '') {
+	    $this->errors[] = 'Sposób płatności jest wymagany';
+	}
+
+        if (static::addPayExists($this->addPay, $this->id ?? null)) {
+            $this->errors[] = 'Sposób płatnośc już istnieje';
+        }
+    }
+
+    public static function addPayExists($addPay, $ignore_id = null)
+    {
+        $user = static::findByAddPay($addPay);
+
+        if ($user) {
+            if ($user->id != $ignore_id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function findByAddPay($addPay)
+    {
+        $sql = 'SELECT * FROM payment_methods_assigned_to_users WHERE name = :addPay';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':addPay', $addPay, PDO::PARAM_STR);
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+
+        $stmt->execute();
+
+        return $stmt->fetch();
+    }
+
+    public function removeIdCategoryIncome()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "UPDATE incomes SET income_category_assigned_to_user_id =(SELECT id FROM incomes_category_assigned_to_users WHERE user_id='$user_id' AND name='Inne') WHERE user_id='$user_id' AND income_category_assigned_to_user_id =(SELECT id FROM incomes_category_assigned_to_users WHERE user_id='$user_id' AND name=:categoryIncomes)";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			$stmt->bindValue(':categoryIncomes', $this->categoryIncomes, PDO::PARAM_STR);
+
+			return $stmt->execute();
+		}
+
+	    return false;		
+	}
+
+    public function removeCategoryIncome()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "DELETE FROM incomes_category_assigned_to_users WHERE user_id='$user_id' AND name=:categoryIncomes";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			$stmt->bindValue(':categoryIncomes', $this->categoryIncomes, PDO::PARAM_STR);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+    public function removeIdCategoryExpense()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			//$sql = "DELETE FROM expenses WHERE user_id='$user_id' AND expense_category_assigned_to_user_id =(SELECT id FROM expenses_category_assigned_to_users WHERE user_id='$user_id' AND name=:categoryExpenses)";
+			
+			$sql = "UPDATE expenses SET expense_category_assigned_to_user_id =(SELECT id FROM expenses_category_assigned_to_users WHERE user_id='$user_id' AND name='Inne') WHERE user_id='$user_id' AND expense_category_assigned_to_user_id =(SELECT id FROM expenses_category_assigned_to_users WHERE user_id='$user_id' AND name=:categoryExpenses)";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			$stmt->bindValue(':categoryExpenses', $this->categoryExpenses, PDO::PARAM_STR);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+    public function removeCategoryExpense()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "DELETE FROM expenses_category_assigned_to_users WHERE user_id='$user_id' AND name=:categoryExpenses";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			$stmt->bindValue(':categoryExpenses', $this->categoryExpenses, PDO::PARAM_STR);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+    public function removeIdPay()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "UPDATE expenses SET payment_method_assigned_to_user_id =(SELECT id FROM payment_methods_assigned_to_users WHERE user_id='$user_id' AND name='Inne') WHERE user_id='$user_id' AND payment_method_assigned_to_user_id  =(SELECT id FROM payment_methods_assigned_to_users WHERE user_id='$user_id' AND name=:removePay)";
+			
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			$stmt->bindValue(':removePay', $this->removePay, PDO::PARAM_STR);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+    public function removePay()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "DELETE FROM payment_methods_assigned_to_users WHERE user_id='$user_id' AND name=:removePay";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			$stmt->bindValue(':removePay', $this->removePay, PDO::PARAM_STR);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+    public function removeUserFromApp()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "DELETE FROM users WHERE id='$user_id' ";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+    public function removeAllIncomes()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "DELETE FROM incomes WHERE user_id='$user_id' ";
+			
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+    public function removeAllExpenses()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "DELETE FROM expenses WHERE user_id='$user_id' ";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+
+
+    public function removeAllIncomesCategory()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "DELETE FROM incomes_category_assigned_to_users WHERE user_id='$user_id'";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+	
+	public function removeAllExpensesCategory()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "DELETE FROM expenses_category_assigned_to_users WHERE user_id='$user_id'";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+	
+	public function removeAllPaymentCategory()
+	{		
+		$user_id = $_SESSION['user_id'];
+		
+		if (empty($this->errors)) {  
+
+			$sql = "DELETE FROM payment_methods_assigned_to_users WHERE user_id='$user_id'";
+
+			$db = static::getDB();
+			$stmt = $db->prepare($sql);
+
+			return $stmt->execute();
+		}
+
+    		return false;		
+	}
+
+
+
+
 }
