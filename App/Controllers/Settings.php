@@ -21,15 +21,17 @@ class Settings extends Authenticated
     public function settingsAction()
     {
         $userIncomeCategories = Income::getUserIncomeCategories($this->user->id);
-        $userExpenseCategories = Expense::getUserExpenseCategories($this->user->id);
+        $userExpenseCategories = Expense::getUserExpenseCategories($this->user->id);   
+        $userExpenseLimit = Expense::getUserExpenseLimit($this->user->id);   
         $userPaymentMethods = Expense::getUserPaymentMethods($this->user->id);
-
+      
         View::renderTemplate(
             'Settings/new.html',
             [
                 'userIncomeCategories' => $userIncomeCategories,
                 'userExpenseCategories' => $userExpenseCategories,
                 'userPaymentMethods' => $userPaymentMethods,
+                'userExpenseLimit' => $userExpenseLimit,
                 'user' => $this->user
             ]
         );
@@ -52,7 +54,6 @@ class Settings extends Authenticated
 
     public function createExpensesAction()
     {
-
         $settingsExpenses = new User($_POST);
 
         if ($settingsExpenses->addCategoryExpense()) {
@@ -68,7 +69,6 @@ class Settings extends Authenticated
 
     public function createPayAction()
     {
-
         $settingsPay = new User($_POST);
 
         if ($settingsPay->addPay()) {
@@ -151,6 +151,86 @@ class Settings extends Authenticated
         } else {
 
 	    Flash::addMessage('Twoje konto nie zostało usunięte.', Flash::WARNING);
+	    $this->redirect('/settings/settings');
+        }
+    }
+
+    public function editIncomesAction()
+    {
+	$settingsUpdate = new User($_POST);
+		
+	if ($settingsUpdate->updateCategoryIncome()){
+						
+	    Flash::addMessage('Zmieniono nazwę wybranej kategorii.');
+            $this->redirect('/settings/settings');
+
+        } else {
+
+	    Flash::addMessage('Nie można zmienić nazwy kategorii na taką, która już istnieje!', Flash::WARNING);
+	    $this->redirect('/settings/settings');
+        }
+    }
+	
+    public function editExpensesAction()
+    {
+	$settingsUpdateExpenses = new User($_POST);
+		
+        if ($settingsUpdateExpenses->updateCategoryExpense()){
+						
+	    Flash::addMessage('Zmieniono nazwę wybranej kategorii.');
+            $this->redirect('/settings/settings');
+
+        } else {
+
+	    Flash::addMessage('Nie można zmienić nazwy kategorii na taką, która już istnieje!', Flash::WARNING);
+	    $this->redirect('/settings/settings');
+        }
+    }
+
+    public function editPayAction()
+    {
+	$settingsEditPay = new User($_POST);
+		
+	if ($settingsEditPay->updatePay()){
+						
+	    Flash::addMessage('Zmieniono nazwę wybranego sposobu płatności.');
+            $this->redirect('/settings/settings');
+
+        } else {
+
+	     Flash::addMessage('Nie można zmienić sposobu płatności na taki, który już istnieje!', Flash::WARNING);
+	     $this->redirect('/settings/settings');
+        }
+    }
+
+    public function editUsernameAction()
+    {
+        $settingsEditUsername = new User($_POST);
+
+        if ($settingsEditUsername->updateUsername()){
+						
+            Flash::addMessage('Zmieniono nazwę użytkownika.');
+                $this->redirect('/settings/settings');
+    
+            } else {
+    
+             Flash::addMessage('Nie zmieniono nazwy użytkownika.', Flash::WARNING);
+             $this->redirect('/settings/settings');
+            }
+    }
+
+    public function limitExpensesAction()
+    {
+	$settingsLimitExpenses = new User($_POST);
+		
+	if ($settingsLimitExpenses->limitCategoryExpense()){
+						
+	    Flash::addMessage('Limit dla wybranego wydatku został wprowadzony');
+            $this->redirect('/settings/settings');
+
+        } else {
+
+	    Flash::addMessage('Limit dla wybranego wydatku nie został wprowadzony', Flash::WARNING);
 	    $this->redirect('/settings/settings');
         }
     }
