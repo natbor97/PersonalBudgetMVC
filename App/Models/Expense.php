@@ -29,6 +29,20 @@ class Expense extends \Core\Model
     return $expense_categories;
   }
 
+  public static function getUserExpenseLimit($id)
+  {
+    $sql = 'SELECT id, amount_limit FROM expenses_category_assigned_to_users WHERE user_id=:id';
+
+    $db = static::getDB();
+    $query_expense_limit = $db->prepare($sql);
+
+    $query_expense_limit->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+    $query_expense_limit->execute();
+    $expense_limit = $query_expense_limit->fetchAll();
+
+    return $expense_limit;
+  }
+
   public static function getUserPaymentMethods($id)
   {
     $sql = 'SELECT id, name FROM payment_methods_assigned_to_users WHERE user_id=:id';
