@@ -234,4 +234,36 @@ class Settings extends Authenticated
 	    $this->redirect('/settings/settings');
         }
     }
+
+    public function editEmailAction()
+    {
+        $settingsEditEmail = new User($_POST);
+
+        if ($settingsEditEmail->updateEmail()){
+            Flash::addMessage('Wejdź na pocztę, aby potwierdzić nowy adres email.');
+            $settingsEditEmail->sendActivationNewEmail();
+            $this->redirect('/logout');
+                    
+            } else {
+    
+             Flash::addMessage('Podany adres email jest już zajęty.', Flash::WARNING);
+             $this->redirect('/settings/settings');
+            }
+    }
+
+    public function editPasswordAction()
+    {
+        $settingsEditPassword = new User($_POST);
+
+        if ($settingsEditPassword->updatePassword()){
+						
+            Flash::addMessage('Zmieniono hasło.');
+                $this->redirect('/settings/settings');
+    
+            } else {
+    
+             Flash::addMessage('Nie zmieniono hasła.', Flash::WARNING);
+             $this->redirect('/settings/settings');
+            }
+    }
 }
