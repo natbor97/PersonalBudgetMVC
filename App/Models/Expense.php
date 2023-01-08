@@ -31,7 +31,7 @@ class Expense extends \Core\Model
 
   public static function getUserExpenseLimit($id)
   {
-    $sql = 'SELECT id, amount_limit FROM expenses_category_assigned_to_users WHERE user_id=:id';
+    $sql = 'SELECT id, expenseLimit FROM expenses_category_assigned_to_users WHERE user_id=:id';
 
     $db = static::getDB();
     $query_expense_limit = $db->prepare($sql);

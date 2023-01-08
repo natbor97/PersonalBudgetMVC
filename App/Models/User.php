@@ -167,6 +167,16 @@ class User extends \Core\Model
         Mailer::send($this->email, 'Aktywacja konta', $text, $html);
     }
 
+    public function sendActivationNewEmail()
+    {
+        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/signup/activate/' . $this->activation_token;
+
+        $text = View::getTemplate('Signup/activation_email.txt', ['url' => $url]);
+        $html = View::getTemplate('Signup/activation_email.html', ['url' => $url]);
+
+        Mailer::send($this->newEmail, 'Aktywacja konta', $text, $html);
+    }
+
     public static function findByToken($hashed_token)
     {
         $sql = 'SELECT * FROM users WHERE activation_hash = :hashed_token';
@@ -768,6 +778,26 @@ class User extends \Core\Model
         return $stmt->fetch();
     }
 
+    public function limitCategoryExpense()
+    	{
+		$user_id = $_SESSION['user_id'];
+        
+		if (empty($this->errors)) {
+
+        	    $sql = "UPDATE expenses_category_assigned_to_users SET expenseLimit = :amountLimit WHERE name = :categoryExpenses AND user_id='$user_id'";
+
+		    $db = static::getDB();
+		    $stmt = $db->prepare($sql);
+
+		    $stmt->bindValue(':categoryExpenses', $this->categoryExpenses, PDO::PARAM_STR);
+		    $stmt->bindValue(':amountLimit', $this->amountLimit, PDO::PARAM_STR);
+
+		    return $stmt->execute();
+        	}
+
+		return false;
+	}
+
     public function updateUsername() {
         $user_id = $_SESSION['user_id'];
 
@@ -781,24 +811,59 @@ class User extends \Core\Model
 		    return $stmt->execute();
     }
 
-    public function limitCategoryExpense()
-    	{
-		$user_id = $_SESSION['user_id'];
-        
-		if (empty($this->errors)) {
+    public function updateEmail() {
 
-        	    $sql = "UPDATE expenses_category_assigned_to_users SET amount_limit = :amountLimit WHERE name = :categoryExpenses AND user_id='$user_id'";
+        $user_id = $_SESSION['user_id'];
+        $updateToken = new Token();
+        $update_hashed_token = $updateToken->getHash();
+        $this->activation_token = $updateToken->getValue();
+
+        if (static::emailExists($this->newEmail)) {
+            $this->errors[] = 'Podany adres email jest już zajęty!';
+        }
+        else {
+        $sql = "UPDATE users SET email = :newEmail, activation_hash = :activation_hash, is_active = 0 WHERE id = '$user_id'";
+
+		$db = static::getDB();
+		$stmt = $db->prepare($sql);
+
+		$stmt->bindValue(':newEmail', $this->newEmail, PDO::PARAM_STR);
+        $stmt->bindValue(':activation_hash', $update_hashed_token, PDO::PARAM_STR);
+
+		return $stmt->execute();
+        }
+    }
+
+    public function updatePassword() {
+
+        $user_id = $_SESSION['user_id'];
+        $user = static::findByID($user_id);
+        $oldPassword = $_POST['oldPassword'];
+        
+        if(password_verify($oldPassword, $user->password)){
+            if (strlen($this->newPassword) < 6 || (preg_match('/.*\d+.*/i', $this->newPassword) == 0)) {
+                $this->errors[] = 'Hasło powinno zawierać minimum 6 znaków i posiadać co najmniej jedną cyfrę!';
+            }
+            else{
+
+            $newPassword_hash = password_hash($this->newPassword, PASSWORD_DEFAULT);
+
+            $sql = "UPDATE users SET password = :newPassword_hash WHERE id='$user_id'";
 
 		    $db = static::getDB();
 		    $stmt = $db->prepare($sql);
 
-		    $stmt->bindValue(':categoryExpenses', $this->categoryExpenses, PDO::PARAM_STR);
-		    $stmt->bindValue(':amountLimit', $this->amountLimit, PDO::PARAM_STR);
+		    $stmt->bindValue(':newPassword_hash', $newPassword_hash, PDO::PARAM_STR);
 
 		    return $stmt->execute();
-        	}
+            }
+        }
+        else{
+            $this->errors[] = 'Niepoprawne hasło!';
+        }
+    
+    }
 
-		return false;
-	}
+
 
 }
