@@ -9,7 +9,7 @@
 
 {% block body %}
 <div class="container-fluid text-center">
-  <button id="choice" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#myCollapse">WYBIERZ OKRES
+  <button id="choice" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#myCollapse">WYBIERZ OKRES
   </button>
   <div class="collapse navbar-collapse container-fluid" id="myCollapse">
     <ul class="navbar-nav mx-auto">
@@ -46,7 +46,7 @@
 
     </h4>
     <hr />
-    <table class="table table-striped bg-white" id="table-incomes">
+    <table class="table table-striped bg-white container-fluid" id="table-incomes">
       <h3>PRZYCHODY</h3>
       {% if incomeSum>0 %}
       <thead>
@@ -82,7 +82,7 @@
 
     <div id="piechartincomes"></div>
 
-    <table class="table table-striped bg-white" id="table-expenses">
+    <table class="table table-striped bg-white container-fluid" id="table-expenses">
       <h3>WYDATKI</h3>
       {% if expenseSum>0 %}
       <thead>
@@ -148,10 +148,10 @@
       </div>
       <div class="modal-body">
         <form action="/showBalance/selectedDate" method="post">
-          Data początkowa:
+          <b>Data początkowa:</b>
           <input type="date" name="start_date" min="1900-01-01" max="2500-01-01" class="form-control" required />
 
-          Data końcowa:
+          <b>Data końcowa:</b>
           <input type="date" name="end_date" min="1900-01-01" max="2500-01-01" class="form-control"required />
           <p>
 
@@ -159,10 +159,6 @@
             <button type="submit" class="btn btn-primary">Zatwierdź</button>
         </form>
         <p>
-        <form method="post" action="/showBalance/currentMonth">
-          <button class="btn btn-danger">Anuluj</button>
-        </form>
-
       </div>
     </div>
   </div>

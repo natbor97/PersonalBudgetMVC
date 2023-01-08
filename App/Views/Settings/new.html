@@ -2,6 +2,22 @@
 
 {% block title %}Budżet Osobisty-Ustawienia{% endblock %}
 
+{% block footer %}
+
+<script>
+    function myFunction() {
+        var x = document.getElementById("newPassword");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
+
+
+{% endblock %}
+
 {% block body %}
 
 <!-- Category incomes -->
@@ -105,7 +121,7 @@
                 {% for value in userExpenseLimit %}
                     <td>
                         <div>
-                            {{value.amount_limit}}
+                            {{value.expenseLimit}}
                         </div>
                     </td>  
                 </tr>      
@@ -239,10 +255,17 @@
                 <tr>
                     <td><b>Adres e-mail: </b></td>
                     <td>{{user.email}}</td>
-                    <td><button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#accountModal">Usuń konto</button></td>
+                    <td><button data-bs-toggle="modal" data-bs-target="#userEmailModal" class="btn btn-primary">Zmień adres email</button></td>
+                </tr>
+                <tr>
+                    <td><b>Hasło: </b></td>
+                    <td>********</td>
+                    <td><button data-bs-toggle="modal" data-bs-target="#userPasswordModal" class="btn btn-primary">Zmień hasło</button></td>
                 </tr>
             </tbody>
         </table>
+        <td colspan="3"><button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#accountModal">Usuń konto</button></td>
+        <p>
     </div>
 </div>
 <br>
@@ -599,6 +622,57 @@
     </div>
 </div>
 
+<!-- The Modal Edit Email -->
+<div class="modal" id="userEmailModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Edycja użytkownika</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/settings/editEmail" method="post">
+                    <b>Nowy adres email:</b>
+                    <input type="email" name="newEmail" class="form-control" value="{{user.email}}" required />
+                    <br>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Wyślij link aktywacyjny</button>
+                    </div>
+                </form>
+                <p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal Edit Password -->
+<div class="modal" id="userPasswordModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Edycja użytkownika</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/settings/editPassword" method="post">
+                    <b>Istniejące hasło: </b>
+                    <input type="password" name="oldPassword" class="form-control" required />
+                    <p>
+                    <b>Nowe hasło: </b>
+                    <input type="password" id="newPassword" name="newPassword" class="form-control" required />
+                    <input type="checkbox" onclick="myFunction()" /> Pokaż hasło
+                    <p>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Zatwierdź</button>
+                    </div>
+                </form>
+                <p>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- The Modal Remove Account -->
