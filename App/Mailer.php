@@ -8,16 +8,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-<<<<<<< HEAD
-require '/home/klient.dhosting.pl/ppp/budget.natalia-borkowska.profesjonalnyprogramista.pl/PHPMailer/src/PHPMailer.php';
-require '/home/klient.dhosting.pl/ppp/budget.natalia-borkowska.profesjonalnyprogramista.pl/PHPMailer/src/SMTP.php';
-require '/home/klient.dhosting.pl/ppp/budget.natalia-borkowska.profesjonalnyprogramista.pl/PHPMailer/src/Exception.php';
-=======
-require '/PHPMailer/src/PHPMailer.php';
-require '/PHPMailer/src/SMTP.php';
-require '/PHPMailer/src/Exception.php';
->>>>>>> c3490de5debb105678b790d9be95ccfcf764bc8f
-
+require 'C:\xampp\htdocs\PersonalBudget\PHPMailer\src\PHPMailer.php';
+require 'C:\xampp\htdocs\PersonalBudget\PHPMailer\src\SMTP.php';
+require 'C:\xampp\htdocs\PersonalBudget\PHPMailer\src\Exception.php';
 
 class Mailer
 {
