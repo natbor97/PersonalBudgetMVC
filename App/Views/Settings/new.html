@@ -353,7 +353,7 @@
                     </div><br>
                     <b>Do jakiej kategorii przenieść przychody?</b>
                     <select class="form-control category" name="chosenCategoryIncomes" required>
-
+                        <option title="Kategoria" value="" disabled selected hidden>Wybierz</option>
                         {% for value in userIncomeCategories %}
                         <option value="{{value.name}}">{{value.name}}</option>
                         {% endfor %}
@@ -489,7 +489,7 @@
                     </div><br>
                     <b>Do jakiej kategorii przenieść wydatki?</b>
                     <select class="form-control category" name="chosenCategoryExpenses" required>
-
+                        <option title="Kategoria" value="" disabled selected hidden>Wybierz</option>
                         {% for value in userExpenseCategories %}
                         <option value="{{value.name}}">{{value.name}}</option>
                         {% endfor %}
