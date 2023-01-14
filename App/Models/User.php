@@ -801,7 +801,7 @@ class User extends \Core\Model
     public function updateUsername() {
         $user_id = $_SESSION['user_id'];
 
-        $sql = "UPDATE users SET username = :newUsername";
+        $sql = "UPDATE users SET username = :newUsername WHERE id='$user_id'";
 
 		    $db = static::getDB();
 		    $stmt = $db->prepare($sql);
