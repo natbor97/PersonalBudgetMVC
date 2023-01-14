@@ -21,10 +21,10 @@ class Settings extends Authenticated
     public function settingsAction()
     {
         $userIncomeCategories = Income::getUserIncomeCategories($this->user->id);
-        $userExpenseCategories = Expense::getUserExpenseCategories($this->user->id);   
-        $userExpenseLimit = Expense::getUserExpenseLimit($this->user->id);   
+        $userExpenseCategories = Expense::getUserExpenseCategories($this->user->id);
+        $userExpenseLimit = Expense::getUserExpenseLimit($this->user->id);
         $userPaymentMethods = Expense::getUserPaymentMethods($this->user->id);
-      
+
         View::renderTemplate(
             'Settings/new.html',
             [
@@ -86,15 +86,23 @@ class Settings extends Authenticated
     {
         $settingsIdRemove = new User($_POST);
         $settingsRemove = new User($_POST);
-        $settingsIdRemove->removeIdCategoryIncome();
-        if ($settingsRemove->removeCategoryIncome()) {
+        $categoryIncomes = $_POST['categoryIncomes'];
+        $chosenCategoryIncomes = $_POST['chosenCategoryIncomes'];
 
-            Flash::addMessage('Wybrana kategoria przychodów została usunięta');
+        if ($categoryIncomes === $chosenCategoryIncomes) {
+            Flash::addMessage('Nie można przenieść przychodów do usuwanej kategorii!', Flash::WARNING);
             $this->redirect('/settings/settings');
         } else {
+            $settingsIdRemove->removeIdCategoryIncome();
+            if ($settingsRemove->removeCategoryIncome()) {
 
-            Flash::addMessage('Wybrana kategoria przychodów nie została usunięta', Flash::WARNING);
-            $this->redirect('/settings/settings');
+                Flash::addMessage('Wybrana kategoria przychodów została usunięta');
+                $this->redirect('/settings/settings');
+            } else {
+
+                Flash::addMessage('Wybrana kategoria przychodów nie została usunięta', Flash::WARNING);
+                $this->redirect('/settings/settings');
+            }
         }
     }
 
@@ -102,15 +110,23 @@ class Settings extends Authenticated
     {
         $settingsIdRemoveExpenses = new User($_POST);
         $settingsRemoveExpenses = new User($_POST);
-        $settingsIdRemoveExpenses->removeIdCategoryExpense();
-        if ($settingsRemoveExpenses->removeCategoryExpense()) {
+        $categoryExpenses = $_POST['categoryExpenses'];
+        $chosenCategoryExpenses = $_POST['chosenCategoryExpenses'];
 
-            Flash::addMessage('Wybrana kategoria wydatków została usunięta');
+        if ($categoryExpenses === $chosenCategoryExpenses) {
+            Flash::addMessage('Nie można przenieść wydatków do usuwanej kategorii!', Flash::WARNING);
             $this->redirect('/settings/settings');
         } else {
+            $settingsIdRemoveExpenses->removeIdCategoryExpense();
+            if ($settingsRemoveExpenses->removeCategoryExpense()) {
 
-            Flash::addMessage('Wybrana kategoria wydatków nie została usunięta', Flash::WARNING);
-            $this->redirect('/settings/settings');
+                Flash::addMessage('Wybrana kategoria wydatków została usunięta');
+                $this->redirect('/settings/settings');
+            } else {
+
+                Flash::addMessage('Wybrana kategoria wydatków nie została usunięta', Flash::WARNING);
+                $this->redirect('/settings/settings');
+            }
         }
     }
 
@@ -132,74 +148,70 @@ class Settings extends Authenticated
 
     public function removeUser()
     {
-	$deleteAllIncomes = new User($_POST);
-	$deleteAllExpenses = new User($_POST);
-	$deleteAllIncomesCategory = new User($_POST);
-	$deleteAllExpensesCategory = new User($_POST);
-	$deleteAllPaymentCategory = new User($_POST);		
-	$deleteUser = new User($_POST);
-	$deleteAllIncomes->removeAllIncomes();
-	$deleteAllExpenses->removeAllExpenses();
-	$deleteAllIncomesCategory->removeAllIncomesCategory();
-	$deleteAllExpensesCategory->removeAllExpensesCategory();
-	$deleteAllPaymentCategory->removeAllPaymentCategory();
-	if ($deleteUser->removeUserFromApp()){
-			
-	    Flash::addMessage('Twoje konto zostało usunięte.');
-            $this->redirect('/logout');
+        $deleteAllIncomes = new User($_POST);
+        $deleteAllExpenses = new User($_POST);
+        $deleteAllIncomesCategory = new User($_POST);
+        $deleteAllExpensesCategory = new User($_POST);
+        $deleteAllPaymentCategory = new User($_POST);
+        $deleteUser = new User($_POST);
+        $deleteAllIncomes->removeAllIncomes();
+        $deleteAllExpenses->removeAllExpenses();
+        $deleteAllIncomesCategory->removeAllIncomesCategory();
+        $deleteAllExpensesCategory->removeAllExpensesCategory();
+        $deleteAllPaymentCategory->removeAllPaymentCategory();
+        if ($deleteUser->removeUserFromApp()) {
 
+            Flash::addMessage('Twoje konto zostało usunięte.');
+            $this->redirect('/logout');
         } else {
 
-	    Flash::addMessage('Twoje konto nie zostało usunięte.', Flash::WARNING);
-	    $this->redirect('/settings/settings');
+            Flash::addMessage('Twoje konto nie zostało usunięte.', Flash::WARNING);
+            $this->redirect('/settings/settings');
         }
     }
 
     public function editIncomesAction()
     {
-	$settingsUpdate = new User($_POST);
-		
-	if ($settingsUpdate->updateCategoryIncome()){
-						
-	    Flash::addMessage('Zmieniono nazwę wybranej kategorii.');
-            $this->redirect('/settings/settings');
+        $settingsUpdate = new User($_POST);
 
+        if ($settingsUpdate->updateCategoryIncome()) {
+
+            Flash::addMessage('Zmieniono nazwę wybranej kategorii.');
+            $this->redirect('/settings/settings');
         } else {
 
-	    Flash::addMessage('Nie można zmienić nazwy kategorii na taką, która już istnieje!', Flash::WARNING);
-	    $this->redirect('/settings/settings');
+            Flash::addMessage('Nie można zmienić nazwy kategorii na taką, która już istnieje!', Flash::WARNING);
+            $this->redirect('/settings/settings');
         }
     }
-	
+
     public function editExpensesAction()
     {
-	$settingsUpdateExpenses = new User($_POST);
-		
-        if ($settingsUpdateExpenses->updateCategoryExpense()){
-						
-	    Flash::addMessage('Zmieniono nazwę wybranej kategorii.');
-            $this->redirect('/settings/settings');
+        $settingsUpdateExpenses = new User($_POST);
 
+        if ($settingsUpdateExpenses->updateCategoryExpense()) {
+
+            Flash::addMessage('Zmieniono nazwę wybranej kategorii.');
+            $this->redirect('/settings/settings');
         } else {
 
-	    Flash::addMessage('Nie można zmienić nazwy kategorii na taką, która już istnieje!', Flash::WARNING);
-	    $this->redirect('/settings/settings');
+            Flash::addMessage('Nie można zmienić nazwy kategorii na taką, która już istnieje!', Flash::WARNING);
+            $this->redirect('/settings/settings');
         }
     }
 
     public function editPayAction()
     {
-	$settingsEditPay = new User($_POST);
-		
-	if ($settingsEditPay->updatePay()){
-						
-	    Flash::addMessage('Zmieniono nazwę wybranego sposobu płatności.');
-            $this->redirect('/settings/settings');
+        $settingsEditPay = new User($_POST);
 
+        if ($settingsEditPay->updatePay()) {
+
+            Flash::addMessage('Zmieniono nazwę wybranego sposobu płatności.');
+            $this->redirect('/settings/settings');
         } else {
 
-	     Flash::addMessage('Nie można zmienić sposobu płatności na taki, który już istnieje!', Flash::WARNING);
-	     $this->redirect('/settings/settings');
+            Flash::addMessage('Nie można zmienić sposobu płatności na taki, który już istnieje!', Flash::WARNING);
+            $this->redirect('/settings/settings');
         }
     }
 
@@ -207,31 +219,29 @@ class Settings extends Authenticated
     {
         $settingsEditUsername = new User($_POST);
 
-        if ($settingsEditUsername->updateUsername()){
-						
+        if ($settingsEditUsername->updateUsername()) {
+
             Flash::addMessage('Zmieniono nazwę użytkownika.');
-                $this->redirect('/settings/settings');
-    
-            } else {
-    
-             Flash::addMessage('Nie zmieniono nazwy użytkownika.', Flash::WARNING);
-             $this->redirect('/settings/settings');
-            }
+            $this->redirect('/settings/settings');
+        } else {
+
+            Flash::addMessage('Nie zmieniono nazwy użytkownika.', Flash::WARNING);
+            $this->redirect('/settings/settings');
+        }
     }
 
     public function limitExpensesAction()
     {
-	$settingsLimitExpenses = new User($_POST);
-		
-	if ($settingsLimitExpenses->limitCategoryExpense()){
-						
-	    Flash::addMessage('Limit dla wybranego wydatku został wprowadzony');
-            $this->redirect('/settings/settings');
+        $settingsLimitExpenses = new User($_POST);
 
+        if ($settingsLimitExpenses->limitCategoryExpense()) {
+
+            Flash::addMessage('Limit dla wybranego wydatku został wprowadzony');
+            $this->redirect('/settings/settings');
         } else {
 
-	    Flash::addMessage('Limit dla wybranego wydatku nie został wprowadzony', Flash::WARNING);
-	    $this->redirect('/settings/settings');
+            Flash::addMessage('Limit dla wybranego wydatku nie został wprowadzony', Flash::WARNING);
+            $this->redirect('/settings/settings');
         }
     }
 
@@ -239,31 +249,29 @@ class Settings extends Authenticated
     {
         $settingsEditEmail = new User($_POST);
 
-        if ($settingsEditEmail->updateEmail()){
+        if ($settingsEditEmail->updateEmail()) {
             Flash::addMessage('Wejdź na pocztę, aby potwierdzić nowy adres email.');
             $settingsEditEmail->sendActivationNewEmail();
             $this->redirect('/logout');
-                    
-            } else {
-    
-             Flash::addMessage('Podany adres email jest już zajęty.', Flash::WARNING);
-             $this->redirect('/settings/settings');
-            }
+        } else {
+
+            Flash::addMessage('Podany adres email jest już zajęty.', Flash::WARNING);
+            $this->redirect('/settings/settings');
+        }
     }
 
     public function editPasswordAction()
     {
         $settingsEditPassword = new User($_POST);
 
-        if ($settingsEditPassword->updatePassword()){
-						
+        if ($settingsEditPassword->updatePassword()) {
+
             Flash::addMessage('Zmieniono hasło.');
-                $this->redirect('/settings/settings');
-    
-            } else {
-    
-             Flash::addMessage('Nie zmieniono hasła.', Flash::WARNING);
-             $this->redirect('/settings/settings');
-            }
+            $this->redirect('/settings/settings');
+        } else {
+
+            Flash::addMessage('Nie zmieniono hasła.', Flash::WARNING);
+            $this->redirect('/settings/settings');
+        }
     }
 }
