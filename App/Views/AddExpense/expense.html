@@ -1,12 +1,7 @@
 {% extends 'navbar.html' %}
 
 {% block title %}Budżet Osobisty- Dodaj Wydatek{% endblock %}
-
-{% block footer %}
-
-<script>document.getElementById('date').valueAsDate = new Date();</script>
-
-{% endblock %}
+{% block head %}{% endblock %}
 
 {% block body %}
 
@@ -20,20 +15,22 @@
                             <h3> DODAJ WYDATEK</h3>
                         </div>
                         <div class="form-group"><br>
-                            <label for="expense"><b>KWOTA</b></label>
-                            <input class="form-control" type="number" min="0.00" max="100000.00" step="0.01" id="expense" name="expenseAmount" placeholder="0.00" required>
+                            <label for="expenseAmount"><b>KWOTA</b></label>
+                            <input class="form-control" type="number" min="0.00" max="100000.00" step="0.01" id="expense_amount" value="{{expenses.amount}}" name="expenseAmount" placeholder="0.00" autocomplete="off" required>
+                            <span class="error" id="expenses_limit"></span>
                         </div>
                         <p>
 
                         <div class="form-group">
-                            <label for="date"><b>DATA</b></label>
-                            <input class="form-control" type="date" id="date" name="expenseDate">
+                            <label for="expense_date"><b>DATA</b></label>
+                            <input class="form-control" type="date" id="expense_date" name="expenseDate" value = "{% if expenses.date is defined %}{{expenses.date}}{% else %}{{currentDate}}{% endif %}" required>
                         </div>
                         <p>
                             
                         <div class="form-group">
                             <b>SPOSÓB PŁATNOŚCI</b>
                             <select class="form-control" name="paymentMethods">
+                            <option title = "Sposób płatności" value="" disabled selected hidden>Wybierz</option>   
                             {% for value in userPaymentMethods %}
                             <option value="{{value.name}}"> {{value.name}} </option>
                             {% endfor %}
@@ -44,17 +41,19 @@
 
                         <div class="form-group">
                             <b>KATEGORIA</b>
-                            <select class="form-control" id="expenseCategory" name="expenseCategory">
+                            <select class="form-control" id="expense_category" name="expenseCategory" onchange="expenseLimit()" required>
+                            <option title = "Kategoria" value="" disabled selected hidden>Wybierz</option>
                             {% for value in userExpenseCategories %}
                             <option value="{{value.name}}"> {{value.name}} </option>
-                            {% endfor %}   
+                            {% endfor %}  
+                            <option  id = "switcher" value="" hidden></option> 
                             </select>
                             <p>
 
                         </div>
 
                         <div class="form-group"><b>KOMENTARZ (OPCJONALNIE)</b><br>
-                            <textarea class="form-control" id="expenseComment" name="expenseComment" style="resize:both" rows="4"></textarea>
+                            <textarea class="form-control" id="expense_comment" name="expenseComment" style="resize:both" rows="4"></textarea>
                         </div>
                         <p>
                         <div>
@@ -79,7 +78,8 @@
             {% for error in income.errors %}
             {{ error }}<br>
             {% endfor %}
-            {% endif %}
+{% endif %}
 </div>
 
+<script src="/js/limit.js"></script>
 {% endblock %}
