@@ -6,6 +6,7 @@ use \Core\View;
 use \App\Auth;
 use \App\Flash;
 use \App\Models\Income;
+use \App\Models\DateManager;
 
 /**
  * AddIncome controller (example)
@@ -25,14 +26,17 @@ class AddIncome extends Authenticated
     {
         $success = false;
         $userIncomeCategories = Income::getUserIncomeCategories($this->user->id);
-
+        $currentDate = Flash::getCurrentDate();
+        
         View::renderTemplate(
             'AddIncome/income.html',
             [
                 'user' => $this->user,
                 'incomes' => $arg1,
                 'errors' => $arg2,
-                'userIncomeCategories' => $userIncomeCategories
+                'success' => $success,
+                'userIncomeCategories' => $userIncomeCategories,
+                'currentDate' => $currentDate
             ]
         );
     }
